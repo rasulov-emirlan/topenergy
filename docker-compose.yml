@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  topenergy-interview-redis:
+    image: redis:7
+    network_mode: host
+    container_name: topenergy-interview-redis
+    restart: always
+    volumes:
+      - ./data:/data
+    ports:
+      - 6379:6379
+  
+  topenergy-interview-jeager:
+    image: jaegertracing/all-in-one:latest
+    network_mode: host
+    container_name: topenergy-interview-jeager
+    restart: always
+    ports:
+      - 16686:16686
+      - 14268:14268
+
+  topenergy-interview-backend:
+    build: .
+    depends_on:
+      - topenergy-interview-redis
+    env_file:
+      - docker.env
+    network_mode: host
+    container_name: topenergy-interview-backend
+    restart: always
